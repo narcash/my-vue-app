@@ -1,30 +1,27 @@
 <template>
   <div id="app">
-    <h1>{{ firstName }}</h1>
-    <h2>{{ 2022 - num }}</h2>
-    <h3>{{ num > 1 ? "Number: > 1" : "Number < 1" }}</h3>
-    <h3>{{ obj.age }}</h3>
-    <a :href="linkUrl">Link</a>
-    <a :[artKey]="linkUrl">Link</a>
-    <template v-if="msgIsVisible === 1">
-      <div class="message">Message</div>
-    </template>
-    <template v-else-if="msgIsVisible >= 2">
-      <div class="message">second Message</div>
-    </template>
-    <template v-else>
-      <div class="message">Another Message</div>
-    </template>
-    <div v-show="isVisibleBlock">V show Example</div>
-    <div class="name-input" v-if="inputNameVisible">
-      <label>Name</label>
-      <input type="text" placeholder="input name" key="name-input" />
-    </div>
-    <div class="nickname-input" v-else>
-      <label>nickName</label>
-      <input type="text" placeholder="input nickname" key="nickname-input" />
-    </div>
-    <button @click="inputNameVisible = !inputNameVisible">change form</button>
+    <HelloWorld :title="title" @onChangeCounter="onChangeCounterComponent" />
+    <!-- <button @click.right="onClick('some value', $event)">Click event</button> -->
+    <!-- <a href @click.prevent="onLinkClick">Link</a> -->
+    <!-- <h1>{{ text }}</h1>
+    <h3 class="title" :class="clasObj">Hello {{ fullName }}!</h3>
+    <input type="text" @keyup.enter="setName" /> -->
+    <!-- <input type="text" @keyup.enter="onKeyUp" /> -->
+    <ul>
+      <!-- <li v-for="(value, name, index) in product" :key="index">
+        {{ name }} : {{ value }}
+      </li> -->
+      <!-- <li v-for="(color, index) in colors" :key="color">
+        {{ index + 1 }} {{ color }}
+      </li> -->
+      <!-- <li v-for="user in users" :key="user.id">
+        {{ user.name }} : {{ user.age }}
+      </li> -->
+      <div>
+        <!-- <input type="text" @keyup.enter="addNewColor" /> -->
+        <!-- <input type="text" @keyup.enter="deleteProp" /> -->
+      </div>
+    </ul>
   </div>
 </template>
 
@@ -36,17 +33,63 @@ export default {
     HelloWorld,
   },
   data: () => ({
-    firstName: "Nariman",
-    num: 1990,
-    obj: {
-      isMarried: false,
-    },
-    linkUrl: "https://google.com",
-    artKey: "href",
-    msgIsVisible: 2,
-    isVisibleBlock: false,
-    inputNameVisible: true,
+    title: "Some title",
   }),
+  computed: {
+    clasObj() {
+      return {
+        "active-class": this.isActive,
+        error: !this.isActive,
+      };
+    },
+    fullName: {
+      get() {
+        return `${this.firstName || "Default"} ${this.lastName || "User"}`;
+      },
+      set(value) {
+        console.log(value);
+        const [firstName, lastName] = value.split(" ");
+        console.log(firstName, lastName);
+        this.firstName = firstName;
+        this.lastName = lastName;
+      },
+    },
+  },
+  methods: {
+    onClick(value, e) {
+      console.log(value, e);
+    },
+    onLinkClick() {
+      console.log("link click");
+    },
+    onKeyUp(e) {
+      console.log(e);
+      this.text = e.target.value;
+    },
+    addNewColor(e) {
+      console.log(this);
+      // this.colors.push(e.target.value);
+      // this.colors[this.colors.length] = e.target.value;
+      this.$set(this.colors, this.colors.length, e.target.value);
+    },
+    deleteProp(e) {
+      // delete this.product[e.target.value];
+      console.log(e.target.value);
+      this.$delete(this.product, e.target.value);
+    },
+    setName(e) {
+      this.fullName = e.target.value;
+    },
+    onLastNameUpdate(value) {
+      console.log("watch", value);
+    },
+    onChangeCounterComponent(value) {
+      console.log("In App.vue, counter: ", value);
+    },
+  },
+  watch: {
+    lastName: "onLastNameUpdate",
+  },
 };
 </script>
 
